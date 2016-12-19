@@ -9,6 +9,7 @@ class Event {
     this.eventLocation = eventLocation || 'sample location';
   }
 }
+
 class Collisions {
   constructor(){
     this.storage = {};
@@ -18,6 +19,23 @@ class Collisions {
   addCollision(event) {
     this.storage[event.id] = event;
     this.length++;
+  }
+  resolve(padding) {
+    //resove x coordinates of each collided events in relation to each other;
+    let previous = null;
+
+    for (let eventID in this.storage) {
+      let event = this.storage[eventID];
+
+      if (previous === null) {
+        event.coordinates.x = padding; //first one;
+      } else {
+        event.coordinates.x = previous + padding;
+      }
+      previous += event.coordinates.width;
+    }
+    //set resolved to true;
+    this.resolved = true;
   }
 }
 
@@ -31,6 +49,7 @@ class SingleDayView {
     this.addEvents(arrayOfEvents)
     this.handleCollisions();
     this.setEventWidth(600);
+    this.setEventCoordinates();
   }
 
   addEvents(arrayOfEvents){
@@ -90,6 +109,22 @@ class SingleDayView {
       }
     }
     return this.events;
+  }
+
+  setEventCoordinates() {
+    let padding = 10; // padding for the green 
+    this.events.forEach(event => {
+      // no collision;
+      if (event.collisions === null) {
+        event.coordinates.x = padding;
+      }
+      // if event has unresolved collision with other events;
+      if (event.collisions !== null && event.collisions.resolved === false) {
+        event.collisions.resolve(padding);
+      }
+      event.coordinates.y = event.start;
+      event.coordinates.height = event.end - event.start;
+    });
   }
 
 }
