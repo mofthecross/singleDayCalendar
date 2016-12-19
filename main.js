@@ -200,7 +200,7 @@ function layOutDay(events){
   layOut.renderEvents('events');
 }
 
-const testcase = [{start: 30, end: 150},  {start: 540, end: 600}, {start: 560, end: 620}, {start:610, end: 670}];
-let singleDayViewTest = new SingleDayView('events');
-singleDayViewTest.process(testcase)
-singleDayViewTest.renderEvents('events');
+// const testcase = [{start: 30, end: 150},  {start: 540, end: 600}, {start: 560, end: 620}, {start:610, end: 670}];
+// let singleDayViewTest = new SingleDayView('events');
+// singleDayViewTest.process(testcase)
+// singleDayViewTest.renderEvents('events');
