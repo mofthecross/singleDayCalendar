@@ -9,3 +9,10 @@ class Event {
     this.eventLocation = eventLocation || 'sample location';
   }
 }
+
+class SingleDayView {
+  constructor(containerID, arrayofEvents) {
+    this.containerID = containerID;
+    this.events = arrayofEvents || null;
+  }
+}
