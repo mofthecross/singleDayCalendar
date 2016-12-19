@@ -1,0 +1,28 @@
+.timeLabel {
+    font: Arial;
+    color: grey;
+    width: 50px;
+    margin-right: 5px;
+}
+
+p {
+    height: 30px;
+    float: right;
+    margin: 0px;
+}
+
+.hour {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.half-hour {
+    font-size: 10px;
+}
+
+.ampm {
+    font-size: 8px;
+    margin-top: 4px;
+    margin-left: 4px;
+    font-weight: normal;
+}
