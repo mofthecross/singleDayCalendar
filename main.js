@@ -11,8 +11,25 @@ class Event {
 }
 
 class SingleDayView {
-  constructor(containerID, arrayofEvents) {
+  constructor(containerID) {
     this.containerID = containerID;
-    this.events = arrayofEvents || null;
+    this.events = null;
+  }
+  addEvents(arrayOfEvents){
+    //reassign and sort events in chronological order;
+    arrayOfEvents = arrayOfEvents.sort(function(a, b) {
+      return a.start - b.start;
+    });
+
+    //replace each event with a reformatted version via Event class instantiation;
+    for (let i = 0; i < arrayOfEvents.length; i++) {
+      arrayOfEvents[i] = new Event(arrayOfEvents[i], i);
+    }
+    this.events = arrayOfEvents;
   }
 }
+
+const testcase = [{start: 100, end: 72},  {start: 0, end: 30}, {start: 0, end: 60}, {start:30, end: 90}, {start: 360, end: 700}, {start: 360, end: 700}]//, {start: 30, end: 150}, {start: 540, end: 600}, {start: 610, end: 670} ]
+let singleDayViewTest = new SingleDayView('events');
+singleDayViewTest.addEvents(testcase);
+console.log(singleDayViewTest);
