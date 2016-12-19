@@ -7,6 +7,7 @@ class Event {
     this.coordinates = { x: null, y: null, width: null, height: null }
     this.eventName = eventName || 'Sample item';
     this.eventLocation = eventLocation || 'sample location';
+    this.W = null;
   }
 }
 
@@ -14,28 +15,57 @@ class Collisions {
   constructor(){
     this.storage = {};
     this.length = 0;
-    this.resolved = false;
+    this.offset = null;
+    this.resolved = { width: false, 'xCoord': false }
   }
+
   addCollision(event) {
     this.storage[event.id] = event;
     this.length++;
   }
-  resolve(padding) {
+
+  resolveWidth(maxwidth) {
+    let conflict = this.length;
+    let earliestEndtime = null;
+    //doing another scan on each collision to see if we can fit
+    //other events to the left;
+    for (let event in this.storage) {
+      if (earliestEndtime === null)  {
+        earliestEndtime = this.storage[event].end;
+      } else {
+        if (this.storage[event].start >= earliestEndtime) {
+          conflict -= 1;
+        }
+        earliestEndtime = Math.min(earliestEndtime, this.storage[event].end);
+      }
+    }
+    this.offset = conflict;
+    this.resolved.width = true;
+  }
+
+  resolveXcoord(padding) {
     //resove x coordinates of each collided events in relation to each other;
-    let previous = null;
+    let previousXcoordinate = null;
+    let previousEndTime;
 
     for (let eventID in this.storage) {
       let event = this.storage[eventID];
 
-      if (previous === null) {
+      if (previousXcoordinate === null) {
         event.coordinates.x = padding; //first one;
+        previousEndTime = event.end;
       } else {
-        event.coordinates.x = previous + padding;
+        if (event.start >= previousEndTime) {
+          event.coordinates.x = padding;
+        } else {
+          event.coordinates.x = previousXcoordinate + padding;
+        }
+        previousEndTime = event.start;
       }
-      previous += event.coordinates.width;
+      previousXcoordinate += event.coordinates.width;
     }
     //set resolved to true;
-    this.resolved = true;
+    this.resolved.xCoord = true;
   }
 }
 
@@ -101,11 +131,16 @@ class SingleDayView {
     let maximumWidth = max;
 
     for (let i = 0; i < this.events.length; i++) {
-      if (this.events[i].collisions !== null) {
-        this.events[i].coordinates.width = maximumWidth / this.events[i].collisions.length;
+      let current = this.events[i];
+      if (current.collisions !== null) {
+        if (current.collisions.resolved.width === false) {
+          current.collisions.resolveWidth()
+        }
+        current.coordinates.width = maximumWidth / current.collisions.offset;
       } else {
-        this.events[i].coordinates.width = maximumWidth;
+        current.coordinates.width = maximumWidth;
       }
+      current.W = current.coordinates.width;
     }
     return this.events;
   }
@@ -118,8 +153,8 @@ class SingleDayView {
         event.coordinates.x = padding;
       }
       // if event has unresolved collision with other events;
-      if (event.collisions !== null && event.collisions.resolved === false) {
-        event.collisions.resolve(padding);
+      if (event.collisions !== null && event.collisions.resolved.xCoord === false) {
+        event.collisions.resolveXcoord(padding);
       }
       event.coordinates.y = event.start;
       event.coordinates.height = event.end - event.start;
@@ -150,12 +185,22 @@ class SingleDayView {
       container.appendChild(div);
     });
   }
-
+  removeEvents(containerID) {
+    let parent = document.getElementById(containerID);
+    while (parent.hasChildNodes()) {
+      parent.removeChild(parent.lastChild)
+    }
+  }
 }
 
-const testcase = [{start: 100, end: 72},  {start: 0, end: 30}, {start: 0, end: 60}, {start:30, end: 90}, {start: 360, end: 700}, {start: 360, end: 700}]//, {start: 30, end: 150}, {start: 540, end: 600}, {start: 610, end: 670} ]
+function layOutDay(events){
+  let layOut = new SingleDayView();
+  layOut.removeEvents('events');
+  layOut.process(events);
+  layOut.renderEvents('events');
+}
+
+const testcase = [{start: 30, end: 150},  {start: 540, end: 600}, {start: 560, end: 620}, {start:610, end: 670}];
 let singleDayViewTest = new SingleDayView('events');
 singleDayViewTest.process(testcase)
 singleDayViewTest.renderEvents('events');
-
-console.log(singleDayViewTest);

@@ -2,6 +2,10 @@
     display: inline-flex;
 }
 
+#time {
+    margin-top: 3px;
+}
+
 .timeLabel {
     font: Arial;
     color: grey;
@@ -29,4 +33,51 @@ p {
     margin-top: 4px;
     margin-left: 4px;
     font-weight: normal;
+}
+
+#events {
+    background-color: #E7E6E5;
+    margin-top: 10px;
+    position: relative;
+    height: 720px;
+    width: 600px;
+    padding: 0px 10px;
+}
+
+.events {
+    background-color: white;
+    position: absolute;
+    display: inline-block;
+    overflow: hidden;
+    border: 1px solid lightgrey;
+    border-left: 4px solid #5F9EA0;
+}
+
+.eventName {
+    margin-left: 10px;
+    float: left;
+    color: #5F9EA0;
+}
+
+p.eventName {
+    height: -webkit-fit-content;
+    margin-top: 5px;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
+.eventLocation {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 12px;
+    float: left;
+    clear: both;
+    color: grey;
+}
+
+p.eventLocation {
+    margin-top: 0px;
+}
+
+
 }
