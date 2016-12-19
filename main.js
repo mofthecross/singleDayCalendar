@@ -40,8 +40,7 @@ class Collisions {
 }
 
 class SingleDayView {
-  constructor(containerID) {
-    this.containerID = containerID;
+  constructor() {
     this.events = null;
   }
 
@@ -112,7 +111,7 @@ class SingleDayView {
   }
 
   setEventCoordinates() {
-    let padding = 10; // padding for the green 
+    let padding = 10; // padding for the green
     this.events.forEach(event => {
       // no collision;
       if (event.collisions === null) {
@@ -127,10 +126,36 @@ class SingleDayView {
     });
   }
 
+  renderEvents(containerID) {
+    let container = document.getElementById(containerID);
+    this.events.forEach(event => {
+      let div = document.createElement('div');
+      div.style.left = event.coordinates.x + 'px';
+      div.style.top = event.coordinates.y + 'px';
+      div.style.width = (event.coordinates.width - 5) + 'px';
+      div.style.height = (event.coordinates.height -2)+ 'px';
+      div.className = 'events';
+
+      let eventName = document.createElement('p')
+      eventName.className = 'eventName';
+      eventName.innerText = document.createTextNode(event.eventName).textContent;
+
+      let eventLocation = document.createElement('p');
+      eventLocation.className ='eventLocation';
+      eventLocation.innerText = document.createTextNode(event.eventLocation).textContent;
+
+      div.appendChild(eventName);
+      div.appendChild(eventLocation);
+
+      container.appendChild(div);
+    });
+  }
+
 }
 
 const testcase = [{start: 100, end: 72},  {start: 0, end: 30}, {start: 0, end: 60}, {start:30, end: 90}, {start: 360, end: 700}, {start: 360, end: 700}]//, {start: 30, end: 150}, {start: 540, end: 600}, {start: 610, end: 670} ]
 let singleDayViewTest = new SingleDayView('events');
 singleDayViewTest.process(testcase)
+singleDayViewTest.renderEvents('events');
 
 console.log(singleDayViewTest);

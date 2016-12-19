@@ -1,3 +1,7 @@
+#main {
+    display: inline-flex;
+}
+
 .timeLabel {
     font: Arial;
     color: grey;
