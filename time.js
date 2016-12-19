@@ -37,9 +37,8 @@ function renderTime(timeArray) {
       div.style.top = key + 'px';
 
       let p = document.createElement('p');
+      //hour intervval
       if (index % 2 === 0) {
-        //hour intervval
-
         p.innerText = document.createTextNode(timeObject[key].time[0]).textContent;
         p.className = 'hour';
 
@@ -48,11 +47,10 @@ function renderTime(timeArray) {
         span.className = 'ampm'
 
         p.appendChild(span);
+      //half-hour interval
       } else {
-
         p.innerText = document.createTextNode(timeObject[key].time[0]).textContent;
         p.className = 'half-hour';
-
       }
       div.appendChild(p);
       timeContainer.appendChild(div);
