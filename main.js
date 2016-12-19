@@ -15,7 +15,6 @@ class Collisions {
     this.length = 0;
     this.resolved = false;
   }
-
   addCollision(event) {
     this.storage[event.id] = event;
     this.length++;
@@ -27,12 +26,18 @@ class SingleDayView {
     this.containerID = containerID;
     this.events = null;
   }
+
+  process(arrayOfEvents) {
+    this.addEvents(arrayOfEvents)
+    this.handleCollisions();
+    this.setEventWidth(600);
+  }
+
   addEvents(arrayOfEvents){
     //reassign and sort events in chronological order;
     arrayOfEvents = arrayOfEvents.sort(function(a, b) {
       return a.start - b.start;
     });
-
     //replace each event with a reformatted version via Event class instantiation;
     for (let i = 0; i < arrayOfEvents.length; i++) {
       arrayOfEvents[i] = new Event(arrayOfEvents[i], i);
@@ -47,11 +52,12 @@ class SingleDayView {
       return true;
     }
   }
+
   handleCollisions() {
     for (let current = 0; current < this.events.length; current++) {
-
       let next = current + 1;
-      //compare two events by passing it into checkCollision method;
+
+      //compare two events (current & next) by passing it into checkCollision method;
       if (next < this.events.length && this.checkCollision(this.events[current], this.events[next])) {
         let conflicts = this.events[current].collisions;
 
@@ -73,11 +79,23 @@ class SingleDayView {
     return this.events;
   }
 
+  setEventWidth(max) {
+    let maximumWidth = max;
+
+    for (let i = 0; i < this.events.length; i++) {
+      if (this.events[i].collisions !== null) {
+        this.events[i].coordinates.width = maximumWidth / this.events[i].collisions.length;
+      } else {
+        this.events[i].coordinates.width = maximumWidth;
+      }
+    }
+    return this.events;
+  }
+
 }
 
 const testcase = [{start: 100, end: 72},  {start: 0, end: 30}, {start: 0, end: 60}, {start:30, end: 90}, {start: 360, end: 700}, {start: 360, end: 700}]//, {start: 30, end: 150}, {start: 540, end: 600}, {start: 610, end: 670} ]
 let singleDayViewTest = new SingleDayView('events');
-singleDayViewTest.addEvents(testcase);
-singleDayViewTest.handleCollisions()
+singleDayViewTest.process(testcase)
 
 console.log(singleDayViewTest);
